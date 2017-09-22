@@ -11,7 +11,8 @@ isBoard = True
 outputPins = []
 inputPins = []
 
-BCMdic = {2:3,3:5,4:7,5:29,6:31,7:26,8:24,9:21,10:19,11:23,12:32,13:33,14:8,15:10,16:36,17:11,18:12,19:35,20:38,21:40,22:15,23:16,24:18,25:22,26:37,27:13}
+#board:BCM
+BCMdic = {3:2,5:3,7:4,29:5,31:6,26:7,24:8,21:9,19:10,23:11,32:12,33:13,8:14,10:15,36:16,11:17,12:18,35:19,38:20,40:21,15:22,16:23,18:24,22:25,37:26,13:27}
 
 pinArray = [GPIOPin.pin(i + 1, BCMdic.get(i + 1,None)) for i in xrange(40)]
 
@@ -26,6 +27,24 @@ def setmode(mode):
         print("BOARD")
     else:
         print("WARNING: Invalid GPIO mode was selected")
+
+def setup(channel, inOrOut):
+    global pinArray
+    if (inOrOut != "IN" and inOrOut !="OUT"):
+        print("WARNING: Invalid mode was selected for pin setup")
+    elif (isBoard):
+        if ((channel > 40) or (channel < 1)):
+            print("WARNING: Pin must be between 1 - 40")
+        else:
+            pinArray[channel - 1].setup(inOrOut)
+    else:
+        pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
+        if (pin):
+            pinArray[pin - 1].setup(inOrOut)
+        else:
+            print("WARNING: Invalid pin number was selected for pin setup")
+    
+    
         
 
         
