@@ -2,6 +2,7 @@ class pin(object):
     pinNum = None
     bcmNum = None
     mode = None # 1 is input, 2 is output
+    val = None
 
     def __init__(self, pinNum, bcmNum):
         self.pinNum = pinNum
@@ -28,3 +29,12 @@ class pin(object):
             else:
                 self.mode = 2
                 print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") set as an output")
+                
+    def setVal(self, val):
+        if (self.mode != 2):
+            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an output first before assigning an output")
+        elif (self.val == val):
+            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") is already set as " + str(val))
+        else:
+            self.val = val
+            print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") set to " + str(val))

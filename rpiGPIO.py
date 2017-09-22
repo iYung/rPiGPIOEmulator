@@ -5,6 +5,8 @@ BCM = "BCM"
 BOARD = "BOARD"
 OUT = "OUT"
 IN = "IN"
+HIGH = True
+LOW = False
 
 #status variables
 isBoard = True
@@ -39,7 +41,7 @@ def setup(channels, inOrOut):
             print("WARNING: Invalid mode was selected for pin setup")
         elif (isBoard):
             if ((pinNum > 40) or (pinNum < 1)):
-                print("WARNING: Pin must be between 1 - 40")
+                print("WARNING: Setup pin must be between 1 - 40")
             else:
                 pinArray[pinNum - 1].setup(inOrOut)
         else:
@@ -48,6 +50,33 @@ def setup(channels, inOrOut):
                 pinArray[pin - 1].setup(inOrOut)
             else:
                 print("WARNING: Invalid pin number was selected for pin setup")
+
+def output(channels, values):
+    global pinArray
+    if isinstance(channels, int):
+        pinNums = [channels]
+    else:
+        pinNums = channels
+    if isinstance(values, int):
+        vals = [values]
+    else:
+        vals = values
+    for i in xrange(len(pinNums)):
+        val = values[i % len(values)]
+        if (val != True and val != False):
+            print("WARNING: Invalid output value was selected")
+        elif (isBoard):
+            if ((pinNums[i] > 40) or (pinNums[i] < 1)):
+                print("WARNING: Output pin must be between 1 - 40")
+            else:
+                pinArray[pinNums[i] - 1].setVal(values[i % len(values)])
+        else:
+            pin = next((x.pinNum for x in pinArray if x.bcmNum == pinNums[i]), None)
+            if (pin):
+                pinArray[pin - 1].setVal(values[i % len(values)])
+            else:
+                print("WARNING: Invalid pin number was selected for pin output")
+
     
     
         
