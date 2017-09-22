@@ -30,7 +30,7 @@ def setmode(mode):
     else:
         print("WARNING: Invalid GPIO mode was selected")
 
-def setup(channels, inOrOut):
+def setup(channels, inOrOut, val=None):
     global pinArray
     if isinstance(channels, int):
         pinNums = [channels]
@@ -39,15 +39,21 @@ def setup(channels, inOrOut):
     for pinNum in pinNums:
         if (inOrOut != "IN" and inOrOut !="OUT"):
             print("WARNING: Invalid mode was selected for pin setup")
+        elif (val != None and val != True and val != False):
+            print("WARNING: Invalid intial state was selected for pin setup")
         elif (isBoard):
             if ((pinNum > 40) or (pinNum < 1)):
                 print("WARNING: Setup pin must be between 1 - 40")
             else:
                 pinArray[pinNum - 1].setup(inOrOut)
+                if (val != None):
+                    output(pinNum, val)
         else:
             pin = next((x.pinNum for x in pinArray if x.bcmNum == pinNum), None)
             if (pin):
                 pinArray[pin - 1].setup(inOrOut)
+                if (val != None):
+                    output(pinNum, val)
             else:
                 print("WARNING: Invalid pin number was selected for pin setup")
 
@@ -57,26 +63,39 @@ def output(channels, values):
         pinNums = [channels]
     else:
         pinNums = channels
-    if isinstance(values, int):
+    if isinstance(values, (int,bool)):
         vals = [values]
     else:
         vals = values
     for i in xrange(len(pinNums)):
-        val = values[i % len(values)]
+        val = vals[i % len(vals)]
         if (val != True and val != False):
             print("WARNING: Invalid output value was selected")
         elif (isBoard):
             if ((pinNums[i] > 40) or (pinNums[i] < 1)):
                 print("WARNING: Output pin must be between 1 - 40")
             else:
-                pinArray[pinNums[i] - 1].setVal(values[i % len(values)])
+                pinArray[pinNums[i] - 1].setVal(val)
         else:
             pin = next((x.pinNum for x in pinArray if x.bcmNum == pinNums[i]), None)
             if (pin):
-                pinArray[pin - 1].setVal(values[i % len(values)])
+                pinArray[pin - 1].setVal(val)
             else:
                 print("WARNING: Invalid pin number was selected for pin output")
 
+def input(channel):
+    global pinArray
+    if (isBoard):
+        if ((channel > 40) or (channel < 1)):
+            print("WARNING: Input pin must be between 1 - 40")
+        else:
+            pinArray[channel - 1].getVal()
+    else:
+        pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
+        if (pin):
+            pinArray[pin - 1].getVal()
+        else:
+            print("WARNING: Invalid pin number was selected for pin input")
     
     
         

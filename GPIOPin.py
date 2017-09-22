@@ -33,8 +33,13 @@ class pin(object):
     def setVal(self, val):
         if (self.mode != 2):
             print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an output first before assigning an output")
-        elif (self.val == val):
-            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") is already set as " + str(val))
         else:
             self.val = val
             print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") set to " + str(val))
+            
+    def getVal(self):
+        if (self.mode != 1):
+            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an input first before retrieving its value. Returning False by default")
+            return False
+        else:
+            return self.val
