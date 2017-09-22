@@ -96,8 +96,29 @@ def input(channel):
             pinArray[pin - 1].getVal()
         else:
             print("WARNING: Invalid pin number was selected for pin input")
-    
-    
-        
-
+            
+def cleanup(channels=None):
+    global pinArray
+    global isBoard
+    if isinstance(channels, int):
+        pinNums = [channels]
+    else:
+        pinNums = channels
+    if (channels == None):
+        print("Cleaned all channels and the pin numbering system")
+        pinArray = [GPIOPin.pin(i + 1, BCMdic.get(i + 1,None)) for i in xrange(40)]
+        isBoard = None
+    elif (isBoard != None):
+        for pinNum in pinNums:
+            if (isBoard):
+                if ((pinNum > 40) or (pinNum < 1)):
+                    print("WARNING: Cleanup pin must be between 1 - 40")
+                else:
+                    pinArray[pinNum - 1].clean()
+            else:
+                pin = next((x.pinNum for x in pinArray if x.bcmNum == pinNum), None)
+                if (pin):
+                    pinArray[pin - 1].clean()
+                else:
+                    print("WARNING: Invalid pin number was selected for pin cleanup")
         

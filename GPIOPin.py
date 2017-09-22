@@ -43,3 +43,8 @@ class pin(object):
             return False
         else:
             return self.val
+            
+    def clean(self):
+        self.val = None
+        self.mode = 0
+        print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") cleaned up")
