@@ -28,21 +28,26 @@ def setmode(mode):
     else:
         print("WARNING: Invalid GPIO mode was selected")
 
-def setup(channel, inOrOut):
+def setup(channels, inOrOut):
     global pinArray
-    if (inOrOut != "IN" and inOrOut !="OUT"):
-        print("WARNING: Invalid mode was selected for pin setup")
-    elif (isBoard):
-        if ((channel > 40) or (channel < 1)):
-            print("WARNING: Pin must be between 1 - 40")
-        else:
-            pinArray[channel - 1].setup(inOrOut)
+    if isinstance(channels, int):
+        pinNums = [channels]
     else:
-        pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
-        if (pin):
-            pinArray[pin - 1].setup(inOrOut)
+        pinNums = channels
+    for pinNum in pinNums:
+        if (inOrOut != "IN" and inOrOut !="OUT"):
+            print("WARNING: Invalid mode was selected for pin setup")
+        elif (isBoard):
+            if ((pinNum > 40) or (pinNum < 1)):
+                print("WARNING: Pin must be between 1 - 40")
+            else:
+                pinArray[pinNum - 1].setup(inOrOut)
         else:
-            print("WARNING: Invalid pin number was selected for pin setup")
+            pin = next((x.pinNum for x in pinArray if x.bcmNum == pinNum), None)
+            if (pin):
+                pinArray[pin - 1].setup(inOrOut)
+            else:
+                print("WARNING: Invalid pin number was selected for pin setup")
     
     
         
