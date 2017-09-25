@@ -1,4 +1,6 @@
 import GPIOPin
+from threading import Thread
+import time
 
 #Consts
 BCM = "BCM"
@@ -124,25 +126,44 @@ def cleanup(channels=None):
                     
 class PWM(object):
     pinIndex = None
-    pwmFreq = None
+    pwmPeriod = None
     dc = None
+    on = False
         
     def __init__(self, channel, freq):
         global pinArray
         global isBoard
-        try:
-            self.pwmFreq = 1 / float(freq)
-            if (isBoard):
-                if ((channel > 40) or (channel < 1)):
-                    print("WARNING: PWM pin must be between 1 - 40")
-                else:
-                    self.pinIndex = channel - 1
+        if (isBoard):
+            if ((channel > 40) or (channel < 1)):
+                print("WARNING: PWM pin must be between 1 - 40")
             else:
-                pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
-                if (pin):
-                    self.pinIndex = pin
-                else:
-                    print("WARNING: Invalid pin number was selected for PWM")
+                self.pinIndex = channel - 1
+                self.pwmFreq = 1 / freq
+        else:
+            pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
+            if (pin):
+                self.pinIndex = pin
+                self.pwmPeriod = 1 / freq
+            else:
+                print("WARNING: Invalid pin number was selected for PWM")
+            
+    def start(self, dc):
+        try:
+            self.dc = float(dc)
+            t = Thread(target = self.__runPWM)
+            t.start()
         except ValueError:
-            print("WARNING: Frequency must be a float value")
+            print("WARNING: DC must be a value from 0 - 100")
+        
+    def __runPWM(self):
+        global pinArray
+        self.on = True
+        while (self.on):
+            pinArray[self.pinIndex].setVal(HIGH)
+            time.sleep(self.pwmFreq * self.dc)
+            pinArray[self.pinIndex].setVal(LOW)
+            time.sleep(self.pwmFreq * (1 - self.dc))
     
+    def stop(self):
+        self.on = False
+        print("Stopping PWM")
