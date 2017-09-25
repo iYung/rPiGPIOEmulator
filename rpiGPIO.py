@@ -121,18 +121,28 @@ def cleanup(channels=None):
                     pinArray[pin - 1].clean()
                 else:
                     print("WARNING: Invalid pin number was selected for pin cleanup")
+                    
+class PWM(object):
+    pinIndex = None
+    pwmFreq = None
+    dc = None
         
-def PWM(channel, freq):
-    global pinArray
-    global isBoard
-    if (isBoard):
-        if ((channel > 40) or (channel < 1)):
-            print("WARNING: PWM pin must be between 1 - 40")
-        else:
-            pinArray[channel - 1].pwmSetup(freq)
-    else:
-        pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
-        if (pin):
-            pinArray[pin - 1].pwmSetup(freq)
-        else:
-            print("WARNING: Invalid pin number was selected for PWM")
+    def __init__(self, channel, freq):
+        global pinArray
+        global isBoard
+        try:
+            self.pwmFreq = 1 / float(freq)
+            if (isBoard):
+                if ((channel > 40) or (channel < 1)):
+                    print("WARNING: PWM pin must be between 1 - 40")
+                else:
+                    self.pinIndex = channel - 1
+            else:
+                pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
+                if (pin):
+                    self.pinIndex = pin
+                else:
+                    print("WARNING: Invalid pin number was selected for PWM")
+        except ValueError:
+            print("WARNING: Frequency must be a float value")
+    
