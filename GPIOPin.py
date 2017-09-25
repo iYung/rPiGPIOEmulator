@@ -3,6 +3,7 @@ class pin(object):
     bcmNum = None
     mode = None # 1 is input, 2 is output
     val = None
+    pwmFreq = None
 
     def __init__(self, pinNum, bcmNum):
         self.pinNum = pinNum
@@ -48,3 +49,10 @@ class pin(object):
         self.val = None
         self.mode = 0
         print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") cleaned up")
+        
+    def pwmSetup(self, val):
+        try:
+            pwmFreq = 1 / float(val)
+        except ValueError:
+            print("WARNING: Frequency must be a float value")
+        

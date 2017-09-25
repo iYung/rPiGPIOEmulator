@@ -122,3 +122,17 @@ def cleanup(channels=None):
                 else:
                     print("WARNING: Invalid pin number was selected for pin cleanup")
         
+def PWM(channel, freq):
+    global pinArray
+    global isBoard
+    if (isBoard):
+        if ((channel > 40) or (channel < 1)):
+            print("WARNING: PWM pin must be between 1 - 40")
+        else:
+            pinArray[channel - 1].pwmSetup(freq)
+    else:
+        pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
+        if (pin):
+            pinArray[pin - 1].pwmSetup(freq)
+        else:
+            print("WARNING: Invalid pin number was selected for PWM")
