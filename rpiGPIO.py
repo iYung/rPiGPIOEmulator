@@ -151,6 +151,7 @@ class PWM(object):
         try:
             self.dc = float(dc)
             t = Thread(target = self.__runPWM)
+            t.daemon = True
             t.start()
         except ValueError:
             print("WARNING: DC must be a value from 0 - 100")
