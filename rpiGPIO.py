@@ -28,9 +28,9 @@ def setmode(mode):
         print("GPIO mode set to BCM")
     elif (mode == BOARD):
         isBoard = True
-        print("BOARD")
+        print("GPIO mode set to BOARD")
     else:
-        print("WARNING: Invalid GPIO mode was selected")
+        print("ERROR: Invalid GPIO mode was selected")
 
 def setup(channels, inOrOut, val=None):
     global pinArray
@@ -40,12 +40,12 @@ def setup(channels, inOrOut, val=None):
         pinNums = channels
     for pinNum in pinNums:
         if (inOrOut != "IN" and inOrOut !="OUT"):
-            print("WARNING: Invalid mode was selected for pin setup")
+            print("ERROR: Invalid mode was selected for pin setup")
         elif (val != None and val != True and val != False):
-            print("WARNING: Invalid intial state was selected for pin setup")
+            print("ERROR: Invalid intial state was selected for pin setup")
         elif (isBoard):
             if ((pinNum > 40) or (pinNum < 1)):
-                print("WARNING: Setup pin must be between 1 - 40")
+                print("ERROR: Setup pin must be between 1 - 40")
             else:
                 pinArray[pinNum - 1].setup(inOrOut)
                 if (val != None):
@@ -57,7 +57,7 @@ def setup(channels, inOrOut, val=None):
                 if (val != None):
                     output(pinNum, val)
             else:
-                print("WARNING: Invalid pin number was selected for pin setup")
+                print("ERROR: Invalid pin number was selected for pin setup")
 
 def output(channels, values):
     global pinArray
@@ -72,10 +72,10 @@ def output(channels, values):
     for i in xrange(len(pinNums)):
         val = vals[i % len(vals)]
         if (val != True and val != False):
-            print("WARNING: Invalid output value was selected")
+            print("ERROR: Invalid output value was selected")
         elif (isBoard):
             if ((pinNums[i] > 40) or (pinNums[i] < 1)):
-                print("WARNING: Output pin must be between 1 - 40")
+                print("ERROR: Output pin must be between 1 - 40")
             else:
                 pinArray[pinNums[i] - 1].setVal(val)
         else:
@@ -83,21 +83,21 @@ def output(channels, values):
             if (pin):
                 pinArray[pin - 1].setVal(val)
             else:
-                print("WARNING: Invalid pin number was selected for pin output")
+                print("ERROR: Invalid pin number was selected for pin output")
 
 def input(channel):
     global pinArray
     if (isBoard):
         if ((channel > 40) or (channel < 1)):
-            print("WARNING: Input pin must be between 1 - 40")
+            print("ERROR: Input pin must be between 1 - 40")
         else:
-            pinArray[channel - 1].getVal()
+            return pinArray[channel - 1].getVal()
     else:
         pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
         if (pin):
-            pinArray[pin - 1].getVal()
+            return pinArray[pin - 1].getVal()
         else:
-            print("WARNING: Invalid pin number was selected for pin input")
+            print("ERROR: Invalid pin number was selected for pin input")
             
 def cleanup(channels=None):
     global pinArray
@@ -114,7 +114,7 @@ def cleanup(channels=None):
         for pinNum in pinNums:
             if (isBoard):
                 if ((pinNum > 40) or (pinNum < 1)):
-                    print("WARNING: Cleanup pin must be between 1 - 40")
+                    print("ERROR: Cleanup pin must be between 1 - 40")
                 else:
                     pinArray[pinNum - 1].clean()
             else:
@@ -122,7 +122,7 @@ def cleanup(channels=None):
                 if (pin):
                     pinArray[pin - 1].clean()
                 else:
-                    print("WARNING: Invalid pin number was selected for pin cleanup")
+                    print("ERROR: Invalid pin number was selected for pin cleanup")
                     
 class PWM(object):
     pinIndex = None
@@ -135,7 +135,7 @@ class PWM(object):
         global isBoard
         if (isBoard):
             if ((channel > 40) or (channel < 1)):
-                print("WARNING: PWM pin must be between 1 - 40")
+                print("ERROR: PWM pin must be between 1 - 40")
             else:
                 self.pinIndex = channel - 1
                 self.pwmFreq = 1 / freq
@@ -145,7 +145,7 @@ class PWM(object):
                 self.pinIndex = pin
                 self.pwmPeriod = 1 / freq
             else:
-                print("WARNING: Invalid pin number was selected for PWM")
+                print("ERROR: Invalid pin number was selected for PWM")
             
     def start(self, dc):
         try:
@@ -154,7 +154,7 @@ class PWM(object):
             t.daemon = True
             t.start()
         except ValueError:
-            print("WARNING: DC must be a value from 0 - 100")
+            print("ERROR: DC must be a value from 0 - 100")
         
     def __runPWM(self):
         global pinArray

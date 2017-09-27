@@ -10,7 +10,7 @@ class pin(object):
 
     def setup(self, mode):
         if (self.bcmNum == None):
-            print("WARNING: Pin " + str(self.pinNum) + " is not a GPIO Pin")
+            print("ERROR: Pin " + str(self.pinNum) + " is not a GPIO Pin")
         elif (mode == "IN"):
             if (self.mode == 1):
                 print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") was already set as an input")
@@ -32,14 +32,14 @@ class pin(object):
                 
     def setVal(self, val):
         if (self.mode != 2):
-            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an output first before assigning an output")
+            print("ERROR: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an output first before assigning an output")
         else:
             self.val = val
             print("Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") set to " + str(val))
             
     def getVal(self):
         if (self.mode != 1):
-            print("WARNING: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an input first before retrieving its value. Returning False by default")
+            print("ERROR: Pin " + str(self.pinNum) + " (BCM " + str(self.bcmNum) + ") must be set as an input first before retrieving its value. Returning False by default")
             return False
         else:
             return self.val
