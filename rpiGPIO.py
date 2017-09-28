@@ -149,7 +149,7 @@ class PWM(object):
             
     def start(self, dc):
         try:
-            self.dc = float(dc)
+            self.dc = float(dc) / 100
             t = Thread(target = self.__runPWM)
             t.daemon = True
             t.start()
