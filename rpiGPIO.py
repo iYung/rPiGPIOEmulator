@@ -148,12 +148,12 @@ class PWM(object):
                 print("ERROR: Invalid pin number was selected for PWM")
             
     def start(self, dc):
-        try:
-            self.dc = float(dc) / 100
+        if (-1 < dc < 100):
+            self.dc = dc / 100
             t = Thread(target = self.__runPWM)
             t.daemon = True
             t.start()
-        except ValueError:
+        else:
             print("ERROR: DC must be a value from 0 - 100")
         
     def __runPWM(self):
