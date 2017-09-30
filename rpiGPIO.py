@@ -138,7 +138,7 @@ class PWM(object):
                 print("ERROR: PWM pin must be between 1 - 40")
             else:
                 self.pinIndex = channel - 1
-                self.pwmFreq = 1 / freq
+                self.pwmPeriod = 1 / freq
         else:
             pin = next((x.pinNum for x in pinArray if x.bcmNum == channel), None)
             if (pin):
@@ -161,9 +161,9 @@ class PWM(object):
         self.on = True
         while (self.on):
             pinArray[self.pinIndex].setVal(HIGH)
-            time.sleep(self.pwmFreq * self.dc)
+            time.sleep(self.pwmPeriod * self.dc)
             pinArray[self.pinIndex].setVal(LOW)
-            time.sleep(self.pwmFreq * (1 - self.dc))
+            time.sleep(self.pwmPeriod * (1 - self.dc))
     
     def stop(self):
         self.on = False
