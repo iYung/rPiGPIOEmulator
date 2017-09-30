@@ -168,3 +168,7 @@ class PWM(object):
     def stop(self):
         self.on = False
         print("Stopping PWM")
+        
+    def ChangeFrequency(self, freq):
+        self.pwmPeriod = 1 / freq
+        print("New frequency set of " + str(freq))
