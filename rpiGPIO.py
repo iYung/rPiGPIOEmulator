@@ -172,3 +172,9 @@ class PWM(object):
     def ChangeFrequency(self, freq):
         self.pwmPeriod = 1 / freq
         print("New frequency set of " + str(freq))
+        
+    def ChangeDutyCycle(self, dc):
+        if (-1 < dc < 100):
+            self.dc = dc / 100
+        else:
+            print("ERROR: DC must be a value from 0 - 100")
